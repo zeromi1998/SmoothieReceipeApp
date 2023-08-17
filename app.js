@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
+const cors = require('cors');
 const smoothieRoute  = require("./routes/smoothieRoutes")
 const {
   checkUserAuthenticated,
@@ -9,10 +10,18 @@ const {
 const CookieParser = require("cookie-parser");
 const app = express();
 
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+
+
+
 // middleware
-app.use(express.static("public"));
+app.use('/public',express.static("public"));
 app.use(express.json());
 app.use(CookieParser());
+app.use(cors());
 
 // view engine
 app.set("view engine", "ejs");

@@ -12,9 +12,9 @@ const createToken = (id) => {
 };
 
 module.exports.signUp_post = async (req, res) => {
-  const { email, password,name } = req.body;
+  const { email, password, name } = req.body;
   try {
-    const user = await User.create({ email, password ,name});
+    const user = await User.create({ email, password, name });
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
     res.status(201).json({ user: user._id });
@@ -32,14 +32,27 @@ module.exports.login_get = (req, res) => {
 
 module.exports.login_Post = async (req, res) => {
   const { email, password } = req.body;
+  // const isValidJSON = obj => {
+  //   try {
+  //     JSON.parse(obj);
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // };
+  // console.log("this req bosy 88888",email,password);
+  // console.log(isValidJSON(req.body));
+
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email});
+  // console.log("this req bosy 88888",email,password,user);
+
     if (user) {
       const auth = await bcrypt.compare(password, user.password);
       if (auth) {
         const token = createToken(user._id);
         res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-        res.status(200).json({ user: user._id ,name:user.name,token});
+        res.status(200).json({ user: user._id, name: user.name, token }); 
       } else {
         throw Error("Incorrect password");
       }

@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const smoothieSchema = new mongoose.Schema({
+  smoothieImg: {
+    type: String,
+  },
   name: {
     type: String,
     require: true,
@@ -16,7 +19,7 @@ const smoothieSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  auther: {
+  author: {
     userId: { type: String, require: true },
     name: { type: String, require: true },
   },

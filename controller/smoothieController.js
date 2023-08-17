@@ -1,5 +1,7 @@
 const Smoothie = require("../model/Smoothie");
 
+const smoothieImgS = require("../model/smoothieImg");
+
 module.exports.get_smoothies = async (req, res) => {
   try {
     uId = req.user.id;
@@ -13,22 +15,43 @@ module.exports.get_smoothies = async (req, res) => {
 module.exports.get_smoothie = async (req, res) => {
   try {
     uId = req.user.id;
-    const smoothiesData = await Smoothie.find({ "auther.userId": req.user.id });
+    const smoothiesData = await Smoothie.find({ "author.userId": req.user.id });
     res.json(smoothiesData);
   } catch (err) {
     res.status(401).send({ err });
   }
 };
 
+module.exports.upload_smoothiesImg = async (req, res) => {
+  const { smoothieImg } = req.body;
+  const url = req.protocol + "://" + req.get("host");
+  console.log("this is ingr*************", url, req.file);
+
+  try {
+    const smoothieImage = await smoothieImgS.create({
+      smoothieImg: url + "/public/" + req.file.filename,
+    });
+
+    console.log("this is neew Reposne from Image Database ", smoothieImage);
+    if (smoothieImage) {
+      res.status(200).send(smoothieImage);
+    }
+  } catch (error) {
+    res.status(400).send({ error });
+  }
+};
+
 module.exports.post_smoothies = async (req, res) => {
-  const { name, ingredients, description, auther } = req.body;
+  const { smoothieImg, name, ingredients, description, author } = req.body;
+  // console.log("this is ingr*************", url, req.body);
 
   try {
     const smoothie = await Smoothie.create({
+      smoothieImg,
       name,
       ingredients,
       description,
-      auther,
+      author,
     });
     if (smoothie) {
       res.status(200).send(smoothie);
