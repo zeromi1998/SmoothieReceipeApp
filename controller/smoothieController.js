@@ -4,8 +4,10 @@ const smoothieImgS = require("../model/smoothieImg");
 
 module.exports.get_smoothies = async (req, res) => {
   try {
+    const size = Number(req.query.size);
+    const frm = Number(req.query.from);
     uId = req.user.id;
-    const smoothiesData = await Smoothie.find();
+    const smoothiesData = await Smoothie.find().skip(frm).limit(size);
     res.json(smoothiesData);
   } catch (err) {
     res.status(401).send({ err });
@@ -15,7 +17,11 @@ module.exports.get_smoothies = async (req, res) => {
 module.exports.get_smoothie = async (req, res) => {
   try {
     uId = req.user.id;
-    const smoothiesData = await Smoothie.find({ "author.userId": req.user.id });
+    const size = Number(req.query.size);
+    const frm = Number(req.query.from);
+    const smoothiesData = await Smoothie.find({ "author.userId": req.user.id })
+      .skip(frm)
+      .limit(size);
     res.json(smoothiesData);
   } catch (err) {
     res.status(401).send({ err });
